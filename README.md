@@ -50,6 +50,7 @@ Dans `phpMyAdmin` ou via terminal :
 ```sql
 source sql/01_creation_bdd.sql;
 source sql/02_donnees_test.sql;
+source sql/03_transaction_reservation.sql
 ```
 
 ### 4. Lancer le serveur PHP local
