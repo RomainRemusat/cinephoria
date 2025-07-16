@@ -38,7 +38,7 @@ cinephoria/
 ## Installation locale
 ### 1. Cloner le projet
 ```bash
-git clone https://github.com/votre-utilisateur/cinephoria.git
+git clone https://github.com/RomainRemusat/cinephoria.git
 cd cinephoria
 ```
 
