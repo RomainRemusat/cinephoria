@@ -10,16 +10,16 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- DONNÉES : categories
 -- ============================================
 INSERT INTO categories (nom, description) VALUES
-                                              ('Action', 'Films d''action et d''aventure'),
-                                              ('Comédie', 'Films humoristiques et comiques'),
-                                              ('Drame', 'Films dramatiques et émouvants'),
-                                              ('Science-fiction', 'Films de science-fiction et futuristes'),
-                                              ('Horreur', 'Films d''horreur et de suspense'),
-                                              ('Romance', 'Films romantiques'),
-                                              ('Documentaire', 'Films documentaires et éducatifs'),
-                                              ('Animation', 'Films d''animation pour tous âges'),
-                                              ('Thriller', 'Films de suspense et de tension'),
-                                              ('Fantastique', 'Films fantastiques et magiques');
+('Action', 'Films d''action et d''aventure'),
+('Comédie', 'Films humoristiques et comiques'),
+('Drame', 'Films dramatiques et émouvants'),
+('Science-fiction', 'Films de science-fiction et futuristes'),
+('Horreur', 'Films d''horreur et de suspense'),
+('Romance', 'Films romantiques'),
+('Documentaire', 'Films documentaires et éducatifs'),
+('Animation', 'Films d''animation pour tous âges'),
+('Thriller', 'Films de suspense et de tension'),
+('Fantastique', 'Films fantastiques et magiques');
 
 -- ============================================
 -- DONNÉES : utilisateurs
@@ -45,12 +45,12 @@ INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, telephone, date_nais
 -- DONNÉES : salles
 -- ============================================
 INSERT INTO salles (nom, capacite, type_salle, equipements) VALUES
-                                                                ('Salle 1', 150, 'standard', '{"son": "Dolby Digital", "ecran": "Standard", "climatisation": true}'),
-                                                                ('Salle 2', 200, 'premium', '{"son": "Dolby Atmos", "ecran": "4K", "climatisation": true, "sieges": "cuir"}'),
-                                                                ('Salle 3', 100, 'standard', '{"son": "Dolby Digital", "ecran": "Standard", "climatisation": true}'),
-                                                                ('Salle IMAX', 300, 'imax', '{"son": "IMAX", "ecran": "IMAX", "climatisation": true, "sieges": "premium"}'),
-                                                                ('Salle 5', 80, 'standard', '{"son": "Dolby Digital", "ecran": "Standard", "climatisation": true}'),
-                                                                ('Salle Premium', 120, 'premium', '{"son": "Dolby Atmos", "ecran": "4K", "climatisation": true, "sieges": "cuir", "service": "VIP"}');
+('Salle 1', 150, 'standard', '{"son": "Dolby Digital", "ecran": "Standard", "climatisation": true}'),
+('Salle 2', 200, 'premium', '{"son": "Dolby Atmos", "ecran": "4K", "climatisation": true, "sieges": "cuir"}'),
+('Salle 3', 100, 'standard', '{"son": "Dolby Digital", "ecran": "Standard", "climatisation": true}'),
+('Salle IMAX', 300, 'imax', '{"son": "IMAX", "ecran": "IMAX", "climatisation": true, "sieges": "premium"}'),
+('Salle 5', 80, 'standard', '{"son": "Dolby Digital", "ecran": "Standard", "climatisation": true}'),
+('Salle Premium', 120, 'premium', '{"son": "Dolby Atmos", "ecran": "4K", "climatisation": true, "sieges": "cuir", "service": "VIP"}');
 
 -- ============================================
 -- DONNÉES : films
@@ -117,45 +117,38 @@ INSERT INTO seances (film_id, salle_id, date_seance, heure_debut, heure_fin, pri
 -- DONNÉES : reservations
 -- ============================================
 INSERT INTO reservations (numero_reservation, utilisateur_id, seance_id, nb_places, prix_total, statut, methode_paiement, qr_code) VALUES
-                                                                                                                                       ('RES001', 6, 1, 2, 19.00, 'confirmee', 'carte', 'QR_RES001_2025'),
-                                                                                                                                       ('RES002', 7, 2, 1, 9.50, 'confirmee', 'paypal', 'QR_RES002_2025'),
-                                                                                                                                       ('RES003', 8, 4, 3, 42.00, 'confirmee', 'carte', 'QR_RES003_2025'),
-                                                                                                                                       ('RES004', 9, 7, 2, 17.00, 'confirmee', 'carte', 'QR_RES004_2025'),
-                                                                                                                                       ('RES005', 10, 9, 1, 11.00, 'en_attente', 'carte', NULL),
-                                                                                                                                       ('RES006', 6, 11, 2, 24.00, 'confirmee', 'carte', 'QR_RES006_2025'),
-                                                                                                                                       ('RES007', 7, 13, 1, 9.50, 'confirmee', 'paypal', 'QR_RES007_2025'),
-                                                                                                                                       ('RES008', 8, 15, 4, 56.00, 'confirmee', 'carte', 'QR_RES008_2025');
+('RES001', 6, 1, 2, 19.00, 'confirmee', 'carte', 'QR_RES001_2025'),
+('RES002', 7, 2, 1, 9.50, 'confirmee', 'paypal', 'QR_RES002_2025'),
+('RES003', 8, 4, 3, 42.00, 'confirmee', 'carte', 'QR_RES003_2025'),
+('RES004', 9, 7, 2, 17.00, 'confirmee', 'carte', 'QR_RES004_2025'),
+('RES005', 10, 9, 1, 11.00, 'en_attente', 'carte', NULL),
+('RES006', 6, 11, 2, 24.00, 'confirmee', 'carte', 'QR_RES006_2025'),
+('RES007', 7, 13, 1, 9.50, 'confirmee', 'paypal', 'QR_RES007_2025'),
+('RES008', 8, 15, 4, 56.00, 'confirmee', 'carte', 'QR_RES008_2025');
 
 -- ============================================
 -- DONNÉES : avis
 -- ============================================
 INSERT INTO avis (utilisateur_id, film_id, note, commentaire, valide) VALUES
-                                                                          (6, 1, 5, 'Film magnifique ! Une poésie visuelle extraordinaire.', TRUE),
-                                                                          (7, 1, 4, 'Très bon film français, Audrey Tautou est formidable.', TRUE),
-                                                                          (8, 2, 4, 'Visuellement époustouflant mais un peu long.', TRUE),
-                                                                          (9, 2, 5, 'Avatar 2 est un chef-d''œuvre technique !', TRUE),
-                                                                          (10, 3, 4, 'Documentaire touchant sur l''éducation.', TRUE),
-                                                                          (6, 4, 5, 'Denis Villeneuve a réussi son adaptation de Dune.', TRUE),
-                                                                          (7, 4, 4, 'Excellent film de science-fiction.', TRUE),
-                                                                          (8, 5, 3, 'Bon divertissement mais sans plus.', TRUE);
+(6, 1, 5, 'Film magnifique ! Une poésie visuelle extraordinaire.', TRUE),
+(7, 1, 4, 'Très bon film français, Audrey Tautou est formidable.', TRUE),
+(8, 2, 4, 'Visuellement époustouflant mais un peu long.', TRUE),
+(9, 2, 5, 'Avatar 2 est un chef-d''œuvre technique !', TRUE),
+(10, 3, 4, 'Documentaire touchant sur l''éducation.', TRUE),
+(6, 4, 5, 'Denis Villeneuve a réussi son adaptation de Dune.', TRUE),
+(7, 4, 4, 'Excellent film de science-fiction.', TRUE),
+(8, 5, 3, 'Bon divertissement mais sans plus.', TRUE);
 
 -- ============================================
 -- DONNÉES : incidents
 -- ============================================
 INSERT INTO incidents (employe_id, salle_id, seance_id, type_incident, titre, description, priorite, statut) VALUES
-                                                                                                                 (3, 1, 1, 'technique', 'Problème de son', 'Le son de la salle 1 grésille pendant la séance d\'Amélie de 14h', 'haute', 'resolu'),
-                                                                                                                 (4, 2, NULL, 'maintenance', 'Nettoyage écran', 'L\'écran de la salle 2 nécessite un nettoyage approfondi', 'basse', 'ouvert'),
-                                                                                                                 (5, 4, 4, 'technique', 'Panne projecteur', 'Le projecteur IMAX s\'est éteint pendant la séance d\'Avatar', 'critique', 'en_cours'),
--- ============================================
--- DONNÉES : incidents
--- ============================================
-    INSERT INTO incidents (employe_id, salle_id, seance_id, type_incident, titre, description, priorite, statut) VALUES
-    (3, 1, 1, 'technique', 'Problème de son', 'Le son de la salle 1 grésille pendant la séance Amélie de 14h', 'haute', 'resolu'),
-                                                                                                                     (4, 2, NULL, 'maintenance', 'Nettoyage écran', 'Écran de la salle 2 nécessite un nettoyage approfondi', 'basse', 'ouvert'),
-                                                                                                                     (5, 4, 4, 'technique', 'Panne projecteur', 'Le projecteur IMAX s''est éteint pendant la séance Avatar', 'critique', 'en_cours'),
-                                                                                                                     (3, 3, NULL, 'securite', 'Sortie de secours bloquée', 'Une sortie de secours de la salle 3 est obstruée', 'moyenne', 'ouvert'),
-                                                                                                                     (4, 6, NULL, 'maintenance', 'Remplacement ampoules', 'Plusieurs ampoules de la salle Premium sont grillées', 'basse', 'ouvert'),
-                                                                                                                     (5, 2, 10, 'technique', 'Problème climatisation', 'La climatisation de la salle 2 ne fonctionne plus', 'haute', 'en_cours');
+(3, 1, 1, 'technique', 'Problème de son', 'Le son de la salle 1 grésille pendant la séance Amélie de 14h', 'haute', 'resolu'),
+(4, 2, NULL, 'maintenance', 'Nettoyage écran', 'Écran de la salle 2 nécessite un nettoyage approfondi', 'basse', 'ouvert'),
+(5, 4, 4, 'technique', 'Panne projecteur', 'Le projecteur IMAX s''est éteint pendant la séance Avatar', 'critique', 'en_cours'),
+(3, 3, NULL, 'securite', 'Sortie de secours bloquée', 'Une sortie de secours de la salle 3 est obstruée', 'moyenne', 'ouvert'),
+(4, 6, NULL, 'maintenance', 'Remplacement ampoules', 'Plusieurs ampoules de la salle Premium sont grillées', 'basse', 'ouvert'),
+(5, 2, 10, 'technique', 'Problème climatisation', 'La climatisation de la salle 2 ne fonctionne plus', 'haute', 'en_cours');
 
 -- ============================================
 -- MISE À JOUR DES COMPTEURS
@@ -203,8 +196,8 @@ WHERE EXISTS (
 
 -- Quelques réservations annulées pour tester
 INSERT INTO reservations (numero_reservation, utilisateur_id, seance_id, nb_places, prix_total, statut, methode_paiement, date_annulation) VALUES
-                                                                                                                                               ('RES009', 9, 3, 1, 9.50, 'annulee', 'carte', '2025-07-24 10:30:00'),
-                                                                                                                                               ('RES010', 10, 6, 2, 28.00, 'annulee', 'paypal', '2025-07-24 15:45:00');
+('RES009', 9, 3, 1, 9.50, 'annulee', 'carte', '2025-07-24 10:30:00'),
+('RES010', 10, 6, 2, 28.00, 'annulee', 'paypal', '2025-07-24 15:45:00');
 
 -- ============================================
 -- PROCÉDURES STOCKÉES UTILES
