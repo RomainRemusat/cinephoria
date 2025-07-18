@@ -29,7 +29,8 @@ Cinéphoria est une suite d'applications (web, mobile, bureautique) destinée à
 ## Structure du dépôt
 ```
 cinephoria/
-├── web/                  # Application web (PHP)
+├── public/               # Application web (interface)
+├── api/                  # Application web (backend PHP)
 ├── mobile/               # Application mobile (Flutter ou responsive)
 ├── bureautique/          # Application bureautique (Python + Tkinter)
 ├── sql/                  # Scripts SQL (création, fixtures, transaction)
