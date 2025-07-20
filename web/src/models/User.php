@@ -182,5 +182,144 @@ class User {
 
     }
 
+    /**
+     * Mettre à jour la dernière connexion
+     * @param int $userId
+     * @return bool
+     */
+    public function updateLastLogin($userId) {
+        try {
+            $reqUpdate = "UPDATE utilisateurs SET last_login = NOW() WHERE id = ?";
+            $stmt = $this->db->getPdo()->prepare($reqUpdate);
+            return $stmt->execute([$userId]);
+        } catch (Exception $e) {
+            throw new Exception('Erreur mise à jour connexion : ' . $e->getMessage());
+        }
+    }
+
+
+    // ===========================================
+    // MÉTHODES Pour les SESSIONS
+    // ===========================================
+
+    /**
+     * Créer la session après connexion réussie
+     * @param array $user
+     */
+    public function createSession($user) {
+        // Sécurité : régénérer l'ID de session
+        session_regenerate_id(true);
+
+        // Stocker les données utilisateur
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_email'] = $user['email'];
+        $_SESSION['user_nom'] = $user['nom'];
+        $_SESSION['user_prenom'] = $user['prenom'];
+        $_SESSION['user_role'] = $user['role'];
+        $_SESSION['login_time'] = time();
+
+        // Mettre à jour la dernière connexion en BDD
+        $this->updateLastLogin($user['id']);
+    }
+
+    /**
+     * Vérifier si utilisateur connecté
+     * @return bool
+     */
+    public function isLoggedIn() {
+        return isset($_SESSION['user_id']);
+    }
+
+    /**
+     * Vérifier le rôle de l'utilisateur connecté
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole($role) {
+        return $this->isLoggedIn() && $_SESSION['user_role'] === $role;
+    }
+
+    /**
+     * Obtenir l'utilisateur connecté
+     * @return array|null
+     */
+    public function getCurrentUser() {
+
+        if (!$this->isLoggedIn()) {
+            return null;
+        }
+
+        return [
+            'id' => $_SESSION['user_id'],
+            'email' => $_SESSION['user_email'],
+            'nom' => $_SESSION['user_nom'],
+            'prenom' => $_SESSION['user_prenom'],
+            'role' => $_SESSION['user_role']
+        ];
+    }
+
+
+    /**
+     * Déconnexion complète
+     */
+    public function logout() {
+        // Vider toutes les variables de session
+        $_SESSION = [];
+
+        // Supprimer le cookie de session si il existe
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+
+        // Détruire la session
+        session_destroy();
+    }
+
+    /**
+     * Valider un rôle
+     * @param string $role
+     * @return bool
+     */
+
+    public function isValideRole($role) {
+        return  in_array($role, ['admin', 'utilisateur', 'employe']);
+    }
+
+    // ===========================================
+    // MÉTHODES TRUCS UTILES
+    // ===========================================
+
+    /**
+     * Compter le nombre d'utilisateurs
+     * @return int
+     */
+    public function count() {
+        return $this->db->count('utilisateurs');
+    }
+
+    /**
+     * Lister tous les utilisateurs (pour admin)
+     * @param int $limit
+     * @return array
+     */
+    public function getAll($limit = 50) {
+        try {
+            $stmt = $this->db->getPdo()->prepare("
+                SELECT id, nom, prenom, email, role, actif, created_at, updated_at
+                FROM utilisateurs 
+                ORDER BY created_at DESC 
+                LIMIT ?
+            ");
+            $stmt->execute([$limit]);
+            return $stmt->fetchAll();
+        } catch (Exception $e) {
+            throw new Exception('Erreur récupération utilisateurs : ' . $e->getMessage());
+        }
+    }
+
 
 }
