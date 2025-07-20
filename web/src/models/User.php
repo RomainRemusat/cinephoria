@@ -4,7 +4,7 @@ class User {
     private $db;
 
     // Ne pas oublier !!!
-    //    getPdo()	Retourne l’objet PDO pour faire des requêtes venant de database.php
+    //    getPdo()	Retourne l’objet PDO pour faire des requêtes venant de Database.php
     //    $this->db	Contient l’objet Database (ton Singleton)
     //    prepare()	Fonction native de PDO pour préparer une requête SQL
 

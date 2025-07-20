@@ -31,7 +31,8 @@ class Database {
      * Charger la config depuis .env
      */
     private function loadConfig() {
-        $envPath = __DIR__ . '/../../config/.env';
+//        $envPath = __DIR__ . '/../../config/.env';
+        $envPath = __DIR__ . '/.env';  // Chemin corrigé
 
         if (!file_exists($envPath)) {
             throw new Exception('Fichier .env introuvable : ' . $envPath);
