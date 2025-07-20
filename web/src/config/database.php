@@ -31,7 +31,8 @@ class Database {
      * Charger la config depuis .env
      */
     private function loadConfig() {
-        $envPath = __DIR__ . '/../../config/.env';
+//        $envPath = __DIR__ . '/../../config/.env';
+        $envPath = __DIR__ . '/.env';  // Chemin corrigé
 
         if (!file_exists($envPath)) {
             throw new Exception('Fichier .env introuvable : ' . $envPath);
@@ -110,6 +111,13 @@ class Database {
         $stmt = $this->pdo->prepare("SELECT * FROM utilisateurs WHERE email = ?");
         $stmt->execute([$email]);
         return $stmt->fetch();
+    }
+
+    /**
+     * Obtenir l'objet PDO (pour les classes métier)
+     */
+    public function getPdo() {
+        return $this->pdo;
     }
 
     /**
