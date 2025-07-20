@@ -95,9 +95,9 @@
                 </p>
             </div>
             <div class="col-md-6 text-md-end">
-                <p class="mb-0 small text-muted">
+                <p class="mb-0 small text-white">
                     <i class="bi bi-code-slash me-1"></i>
-                    Développé avec ❤️ pour l'environnement
+                    Développé avec ❤️ par @tatort pour l'environnement
                 </p>
             </div>
         </div>

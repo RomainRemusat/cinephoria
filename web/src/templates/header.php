@@ -42,7 +42,8 @@ if (!function_exists('isLoggedIn')) {
         <!-- Logo -->
         <a class="navbar-brand fw-bold fs-3" href="index.php">
             <i class="bi bi-film text-accent-cinephoria me-2"></i>
-            <span class="text-accent-cinephoria">CINÉ</span>PHORIA
+<!--            <span class="text-accent-cinephoria">CINÉ</span>PHORIA-->
+            <img src="../images/logo-cinephoria.svg" alt="logo de la société cinéphoria" width="160" height="53">
         </a>
 
         <!-- Bouton mobile -->
