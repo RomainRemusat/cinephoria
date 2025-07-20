@@ -41,9 +41,10 @@ if (!function_exists('isLoggedIn')) {
     <div class="container">
         <!-- Logo -->
         <a class="navbar-brand fw-bold fs-3" href="index.php">
-            <i class="bi bi-film text-accent-cinephoria me-2"></i>
+<!--            <i class="bi bi-film text-accent-cinephoria me-2"></i>-->
 <!--            <span class="text-accent-cinephoria">CINÉ</span>PHORIA-->
-            <img src="../images/logo-cinephoria.svg" alt="logo de la société cinéphoria" width="160" height="53">
+            <img src="assets/images/logo-cinephoria-simple.svg" alt="logo de la société cinéphoria" width="180" height="60">
+
         </a>
 
         <!-- Bouton mobile -->
@@ -54,7 +55,7 @@ if (!function_exists('isLoggedIn')) {
         <!-- Menu de navigation -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <!-- Menu gauche -->
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav me-auto ">
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">
                         <i class="bi bi-house-door me-1"></i>Accueil
@@ -70,7 +71,7 @@ if (!function_exists('isLoggedIn')) {
                         <i class="bi bi-ticket-perforated me-1"></i>Réservation
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item ">
                     <a class="nav-link" href="contact.php">
                         <i class="bi bi-envelope me-1"></i>Contact
                     </a>
@@ -78,7 +79,7 @@ if (!function_exists('isLoggedIn')) {
             </ul>
 
             <!-- Menu droite - Utilisateur -->
-            <ul class="navbar-nav">
+            <ul class="navbar-nav align-items-center">
                 <?php if (isLoggedIn()): ?>
                     <?php $user = getCurrentUser(); ?>
 

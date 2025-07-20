@@ -5,10 +5,13 @@
  */
 
 // Démarrer la session
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Charger les dépendances
 require_once '../src/helpers/helpers.php';
+Database::getInstance();
 
 // Rediriger si déjà connecté
 if (isLoggedIn()) {
@@ -45,6 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             $userModel = user();
             $loginResult = $userModel->login($email, $password);
+
+//            echo"<pre>";
+//            print_r($loginResult);
+//            echo"</pre>";
+
 
             if ($loginResult) {
                 // Connexion réussie
@@ -217,7 +225,7 @@ $pageTitle = 'Connexion - Cinéphoria';
                 </form>
 
                 <!-- Comptes de test (à supprimer en production) -->
-                <?php if ($_ENV['development'] !== 'production'): ?>
+                <?php if ($_ENV['APP_ENV'] !== 'production'): ?>
                     <div class="mt-4">
                         <details class="text-center">
                             <summary class="text-muted small" style="cursor: pointer;">

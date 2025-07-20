@@ -76,7 +76,7 @@ class User {
             $user = $this->getByEmail($email);
 
             // Maintenant on test !! On vérifie si le MDP est bon
-            if ($user && password_verify($password, $user['password'])) {
+            if ($user && password_verify($password, $user['mot_de_passe'])) {
                 return $user;
             }
 
