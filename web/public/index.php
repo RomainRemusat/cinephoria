@@ -163,7 +163,7 @@ try {
                                                             Se connecter
                                                         </a>
                                                     <?php endif; ?>
-                                                    <a href="film.php?id=<?= $film['id'] ?>" class="btn btn-outline-light btn-lg">
+                                                    <a href="films.php?id=<?= $film['id'] ?>" class="btn btn-outline-light btn-lg">
                                                         <i class="bi bi-info-circle me-2"></i>
                                                         Découvrir
                                                     </a>
@@ -227,30 +227,44 @@ try {
         <?php endif; ?>
     </section>
     <!-- Section choix cinéma -->
-    <section class="container my-5">
-        <div class="bg-light p-4 rounded shadow-sm">
+    <section class=" py-5">
+        <div class="bg-light border border-light-subtle container bg-white p-4 rounded shadow-sm">
             <h5>Les séances dans mon cinéma</h5>
             <form>
+                <?php
+                $cinemaModel = Cinema();
+                $ListCinema = $cinemaModel->getInfos();
+                ?>
+
                 <div class="form-group mt-3">
                     <label for="cinemaSelect" class="form-label visually-hidden">Choisir un cinéma</label>
                     <select class="form-select" id="cinemaSelect" aria-label="Choisir un cinéma">
 
-                        <option selected>Choisir un cinéma</option>
-                        <option value="1">Cinéma Lumière</option>
-                        <option value="2">Cinéma Pathé</option>
-                        <option value="3">Cinéma Gaumont</option>
+                        <?php $valeurPrecedente = ""; ?>
+                        <?php foreach ($ListCinema as $key => $value) { ?>
+                        <?php if ($value['pays'] != $valeurPrecedente) : ?>
+                        <?php if ($valeurPrecedente !== "") : ?>
+                            </optgroup>
+                        <?php endif; ?>
+                            <optgroup label="<?= $value['pays'] ?>">
+                                <?php endif; ?>
+                                <option value="<?= $value['id'] ?>"><?= $value['ville'] ?></option>
+                                <?php $valeurPrecedente = $value['pays']; ?>
+                                <?php } ?>
+                                <?php if ($valeurPrecedente !== "") : ?>
+                            </optgroup>
+                        <?php endif; ?>
+
+
                     </select>
                 </div>
             </form>
         </div>
     </section>
 
-
-
-
     <!-- Section Films à l'affiche -->
     <?php if (!empty($filmsAffiche)): ?>
-        <section class="py-5 bg-light">
+        <section class="py-5 ">
             <div class="container">
                 <!-- Header section -->
                 <div class="row mb-5">

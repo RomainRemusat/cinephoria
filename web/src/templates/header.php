@@ -39,6 +39,22 @@ include_once __DIR__ . '/../helpers/functions.php';
 </head>
 <body>
 
+
+<!-- Messages flash -->
+<?php if ($flashes = getAllFlashes()): ?>
+    <div class="position-relative">
+        <?php foreach ($flashes as $type => $message): ?>
+            <div class="alert alert-<?= $type === 'error' ? 'danger' : $type ?> alert-dismissible fade show m-0" role="alert">
+                <i class="bi bi-<?= $type === 'success' ? 'check-circle' : ($type === 'error' ? 'exclamation-triangle' : 'info-circle') ?> me-2"></i>
+                <?= clean($message) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
+<!-- Contenu principal -->
+
 <!-- Navigation principale -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary-cinephoria">
     <div class="container">
@@ -46,7 +62,7 @@ include_once __DIR__ . '/../helpers/functions.php';
         <a class="navbar-brand fw-bold fs-3" href="index.php">
 <!--            <i class="bi bi-film text-accent-cinephoria me-2"></i>-->
 <!--            <span class="text-accent-cinephoria">CINÉ</span>PHORIA-->
-            <img src="assets/images/logo-cinephoria-simple.svg" alt="logo de la société cinéphoria" width="180" height="60">
+            <img src="assets/images/logo/logo-cinephoria-simple.svg" alt="logo de la société cinéphoria" width="180" height="60">
 
         </a>
 
@@ -148,18 +164,5 @@ include_once __DIR__ . '/../helpers/functions.php';
     </div>
 </nav>
 
-<!-- Messages flash -->
-<?php if ($flashes = getAllFlashes()): ?>
-    <div class="container mt-3">
-        <?php foreach ($flashes as $type => $message): ?>
-            <div class="alert alert-<?= $type === 'error' ? 'danger' : $type ?> alert-dismissible fade show" role="alert">
-                <i class="bi bi-<?= $type === 'success' ? 'check-circle' : ($type === 'error' ? 'exclamation-triangle' : 'info-circle') ?> me-2"></i>
-                <?= clean($message) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
 
-<!-- Contenu principal -->
 <main>

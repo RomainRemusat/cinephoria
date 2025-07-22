@@ -3,7 +3,7 @@
 class User {
     private $db;
 
-    // Ne pas oublier !!!
+    //    A ne pas oublier !!!
     //    getPdo()	Retourne l’objet PDO pour faire des requêtes venant de Database.php
     //    $this->db	Contient l’objet Database (ton Singleton)
     //    prepare()	Fonction native de PDO pour préparer une requête SQL
@@ -49,7 +49,7 @@ class User {
             $stmt = $this->db->getPdo()->prepare($req);
             $stmt->execute([$id]);
             return $stmt->fetch();
-         }
+        }
         catch(Exception $e){
             throw new Exception('Erreur recherche utilisateur : ' . $e->getMessage());
         }
@@ -76,7 +76,7 @@ class User {
             $user = $this->getByEmail($email);
 
             // Maintenant on test !! On vérifie si le MDP est bon
-            if ($user && password_verify($password, $user['password'])) {
+            if ($user && password_verify($password, $user['mot_de_passe'])) {
                 return $user;
             }
 
@@ -143,7 +143,7 @@ class User {
         // 02 - Le mot de passe
 
         // On à défini un valeur mini de 8
-        if (strlen($userData['password']) > 8) {
+        if (strlen($userData['password']) < 8) {
             throw new Exception('Le mot de passe doit contenir au moins 8 caractères');
         }
 
@@ -157,18 +157,32 @@ class User {
         // 03 - On fait l'insertion
 
         try {
-
-            $reqInsert ="
-                            INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, actif) 
-                            VALUES (:nom, :prenom, :email, :password, :role,now())";
+            $reqInsert = "
+                INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, telephone, date_naissance, role, actif) 
+                VALUES (:nom, :prenom, :email, :password, :telephone, :date_naissance, :role, 1)";
 
             $stmt = $this->db->getPdo()->prepare($reqInsert);
-            $stmt->bindParam(':nom', trim($userData['nom']));
-            $stmt->bindParam(':prenom', trim($userData['prenom']));
-            $stmt->bindParam(':email', trim($userData['email']));
-            $stmt->bindParam(':password', password_hash($userData['password'], PASSWORD_DEFAULT));
-            $stmt->bindParam(':role', $userData['role'] ?? 'utilisateur');
+
+            // On prépare les variables
+            $nom = trim($userData['nom']);
+            $prenom = trim($userData['prenom']);
+            $email = trim($userData['email']);
+            $password = password_hash($userData['password'], PASSWORD_DEFAULT);
+            $telephone = $userData['telephone'] ?? null;
+            $date_naissance = $userData['date_naissance'] ?? null;
+            $role = $userData['role'] ?? 'utilisateur';
+
+            // On les passe
+            $stmt->bindParam(':nom', $nom);
+            $stmt->bindParam(':prenom', $prenom);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $password);
+            $stmt->bindParam(':telephone', $telephone);
+            $stmt->bindParam(':date_naissance', $date_naissance);
+            $stmt->bindParam(':role', $role);
+
             $result = $stmt->execute();
+
             if ($result) {
                 return $this->db->getPdo()->lastInsertId();
             } else {
