@@ -366,11 +366,9 @@ $pageTitle = 'Inscription - Cinéphoria';
                 { regex: /[\W_]/, text: 'Un caractère spécial' }
             ];
 
-            // Simple validation feedback (could be enhanced with visual indicators)
         });
     </script>
 
 <?php
-$pageScript = 'register.js';
 include '../src/templates/footer.php';
 ?>

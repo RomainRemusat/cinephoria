@@ -243,8 +243,32 @@ $pageTitle = 'Connexion - Cinéphoria';
         </div>
     </div>
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle password visibility dans login.php
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordField = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (togglePassword && passwordField && eyeIcon) {
+                togglePassword.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    if (passwordField.type === 'password') {
+                        passwordField.type = 'text';
+                        eyeIcon.classList.remove('bi-eye');
+                        eyeIcon.classList.add('bi-eye-slash');
+                    } else {
+                        passwordField.type = 'password';
+                        eyeIcon.classList.remove('bi-eye-slash');
+                        eyeIcon.classList.add('bi-eye');
+                    }
+                });
+            }
+        });
+    </script>
+
 <?php
-// JavaScript spécifique à cette page
-$pageScript = 'login.js';
 include '../src/templates/footer.php';
 ?>
