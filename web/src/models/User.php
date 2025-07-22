@@ -157,18 +157,32 @@ class User {
         // 03 - On fait l'insertion
 
         try {
-
-            $reqInsert ="
-                            INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, actif) 
-                            VALUES (:nom, :prenom, :email, :password, :role,now())";
+            $reqInsert = "
+                INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, telephone, date_naissance, role, actif) 
+                VALUES (:nom, :prenom, :email, :password, :telephone, :date_naissance, :role, 1)";
 
             $stmt = $this->db->getPdo()->prepare($reqInsert);
-            $stmt->bindParam(':nom', trim($userData['nom']));
-            $stmt->bindParam(':prenom', trim($userData['prenom']));
-            $stmt->bindParam(':email', trim($userData['email']));
-            $stmt->bindParam(':password', password_hash($userData['password'], PASSWORD_DEFAULT));
-            $stmt->bindParam(':role', $userData['role'] ?? 'utilisateur');
+
+            // On prépare les variables
+            $nom = trim($userData['nom']);
+            $prenom = trim($userData['prenom']);
+            $email = trim($userData['email']);
+            $password = password_hash($userData['password'], PASSWORD_DEFAULT);
+            $telephone = $userData['telephone'] ?? null;
+            $date_naissance = $userData['date_naissance'] ?? null;
+            $role = $userData['role'] ?? 'utilisateur';
+
+            // On les passe
+            $stmt->bindParam(':nom', $nom);
+            $stmt->bindParam(':prenom', $prenom);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $password);
+            $stmt->bindParam(':telephone', $telephone);
+            $stmt->bindParam(':date_naissance', $date_naissance);
+            $stmt->bindParam(':role', $role);
+
             $result = $stmt->execute();
+
             if ($result) {
                 return $this->db->getPdo()->lastInsertId();
             } else {
