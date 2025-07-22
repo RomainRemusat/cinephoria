@@ -3,7 +3,7 @@
 class User {
     private $db;
 
-    // Ne pas oublier !!!
+    //    A ne pas oublier !!!
     //    getPdo()	Retourne l’objet PDO pour faire des requêtes venant de Database.php
     //    $this->db	Contient l’objet Database (ton Singleton)
     //    prepare()	Fonction native de PDO pour préparer une requête SQL
@@ -143,7 +143,7 @@ class User {
         // 02 - Le mot de passe
 
         // On à défini un valeur mini de 8
-        if (strlen($userData['password']) > 8) {
+        if (strlen($userData['password']) < 8) {
             throw new Exception('Le mot de passe doit contenir au moins 8 caractères');
         }
 

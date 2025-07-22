@@ -32,7 +32,7 @@ if (!function_exists('isLoggedIn')) {
     <link href="assets/css/style.css" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon/favicon.ico">
 </head>
 <body>
 

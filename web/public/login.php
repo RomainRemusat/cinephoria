@@ -49,10 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userModel = user();
             $loginResult = $userModel->login($email, $password);
 
-//            echo"<pre>";
-//            print_r($loginResult);
-//            echo"</pre>";
-
 
             if ($loginResult) {
                 // Connexion réussie
