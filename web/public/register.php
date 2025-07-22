@@ -84,7 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Vérifier si email existe déjà
             if ($userModel->emailExists($email)) {
                 $errors['email'] = 'Cet email est déjà utilisé';
-            } else {
+            }
+            else {
                 // Préparer les données utilisateur
                 $userData = [
                     'nom' => $nom,
@@ -108,9 +109,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             redirect('index.php');
                         }
                     }
+
                 } catch (Exception $e) {
-                    $errors['general'] = 'Erreur lors de la création du compte. Veuillez réessayer.';
-                    logError('Erreur création compte', ['error' => $e->getMessage(), 'email' => $email]);
+                    $errors['general'] = 'Erreur : ' . $e->getMessage();
+                    echo '<pre>' . print_r($e, true) . '</pre>';
+                    exit;
                 }
             }
         }

@@ -49,7 +49,7 @@ class User {
             $stmt = $this->db->getPdo()->prepare($req);
             $stmt->execute([$id]);
             return $stmt->fetch();
-         }
+        }
         catch(Exception $e){
             throw new Exception('Erreur recherche utilisateur : ' . $e->getMessage());
         }

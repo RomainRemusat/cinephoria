@@ -16,7 +16,7 @@
  * sans avoir à faire "require_once" à chaque fois
  */
 spl_autoload_register(function ($className) {
-    $baseDir = realpath(__DIR__ . '/../'); // ← Va dans web/src
+    $baseDir = realpath(__DIR__ . '/../');
 
     $paths = [
         $baseDir . '/models/' . $className . '.php',
@@ -50,6 +50,13 @@ function db() {
  */
 function user() {
     return new User();
+}
+
+/**
+ * Raccourci pour créer un nouvel objet User
+ */
+function cinema() {
+    return new Cinema();
 }
 
 // ===========================================

@@ -1,0 +1,50 @@
+# --- Environnement ---
+.env
+.env.local
+.env.*
+
+# --- Fichiers système ---
+.DS_Store
+Thumbs.db
+
+# --- Éditeurs ---
+.vscode/
+.idea/
+
+# --- Dépendances & build ---
+/node_modules/
+/vendor/
+/build/
+/dist/
+
+# --- Flutter / Dart ---
+.dart_tool/
+/flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+build/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/ServiceDefinitions.json
+
+# --- Python (Tkinter) ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Logs & temporaires ---
+*.log
+*.tmp
+*.bak
+.cache/
+~$*
+
+# --- Déploiement ---
+fly.toml
+
+# --- Export PDF ou Word ---
+*.pdf
+*.doc
+*.docx
