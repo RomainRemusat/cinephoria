@@ -12,35 +12,61 @@ DROP TABLE IF EXISTS films;
 DROP TABLE IF EXISTS salles;
 DROP TABLE IF EXISTS utilisateurs;
 DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS cinemas;
+
+-- ============================================
+-- TABLE : cinemas (NOUVELLE TABLE)
+-- ============================================
+CREATE TABLE cinemas (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ ville VARCHAR(50) NOT NULL,
+ pays VARCHAR(50) NOT NULL,
+ adresse VARCHAR(100) NOT NULL,
+ code_postal VARCHAR(10),
+ telephone VARCHAR(20),
+ email VARCHAR(100),
+ actif BOOLEAN DEFAULT TRUE,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+ INDEX idx_ville (ville),
+ INDEX idx_pays (pays),
+ INDEX idx_actif (actif)
+);
 
 -- ============================================
 -- TABLE : categories
 -- ============================================
 CREATE TABLE categories (
-                            id INT AUTO_INCREMENT PRIMARY KEY,
-                            nom VARCHAR(100) NOT NULL UNIQUE,
-                            description TEXT,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+id INT AUTO_INCREMENT PRIMARY KEY,
+nom VARCHAR(100) NOT NULL UNIQUE,
+description TEXT,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================
 -- TABLE : utilisateurs
 -- ============================================
 CREATE TABLE utilisateurs (
-                              id INT AUTO_INCREMENT PRIMARY KEY,
-                              nom VARCHAR(100) NOT NULL,
-                              prenom VARCHAR(100) NOT NULL,
-                              email VARCHAR(255) UNIQUE NOT NULL,
-                              mot_de_passe VARCHAR(255) NOT NULL,
-                              telephone VARCHAR(20),
-                              date_naissance DATE,
-                              role ENUM('utilisateur', 'employe', 'admin') DEFAULT 'utilisateur',
-                              actif BOOLEAN DEFAULT TRUE,
-                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+id INT AUTO_INCREMENT PRIMARY KEY,
+nom VARCHAR(100) NOT NULL,
+prenom VARCHAR(100) NOT NULL,
+email VARCHAR(255) UNIQUE NOT NULL,
+mot_de_passe VARCHAR(255) NOT NULL,
+telephone VARCHAR(20),
+date_naissance DATE,
+cinema_id INT NULL,
+role ENUM('utilisateur', 'employe', 'admin') DEFAULT 'utilisateur',
+actif BOOLEAN DEFAULT TRUE,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+last_login TIMESTAMP NULL,
 
-                              INDEX idx_email (email),
-                              INDEX idx_role (role)
+FOREIGN KEY (cinema_id) REFERENCES cinemas(id) ON DELETE SET NULL,
+INDEX idx_email (email),
+INDEX idx_role (role),
+INDEX idx_cinema (cinema_id),
+INDEX idx_last_login (last_login)
 );
 
 -- ============================================
@@ -48,14 +74,18 @@ CREATE TABLE utilisateurs (
 -- ============================================
 CREATE TABLE salles (
                         id INT AUTO_INCREMENT PRIMARY KEY,
-                        nom VARCHAR(50) NOT NULL UNIQUE,
+                        cinema_id INT NOT NULL,
+                        nom VARCHAR(50) NOT NULL,
                         capacite INT NOT NULL,
                         type_salle ENUM('standard', 'premium', 'imax') DEFAULT 'standard',
                         equipements JSON,
                         actif BOOLEAN DEFAULT TRUE,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                        INDEX idx_nom (nom)
+                        FOREIGN KEY (cinema_id) REFERENCES cinemas(id) ON DELETE CASCADE,
+                        INDEX idx_nom (nom),
+                        INDEX idx_cinema (cinema_id),
+                        UNIQUE KEY unique_salle_cinema (cinema_id, nom)
 );
 
 -- ============================================
@@ -167,6 +197,7 @@ CREATE TABLE avis (
 CREATE TABLE incidents (
                            id INT AUTO_INCREMENT PRIMARY KEY,
                            employe_id INT NOT NULL,
+                           cinema_id INT,
                            salle_id INT,
                            seance_id INT,
                            type_incident ENUM('technique', 'securite', 'maintenance', 'autre') NOT NULL,
@@ -182,10 +213,12 @@ CREATE TABLE incidents (
                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
                            FOREIGN KEY (employe_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
+                           FOREIGN KEY (cinema_id) REFERENCES cinemas(id) ON DELETE SET NULL,
                            FOREIGN KEY (salle_id) REFERENCES salles(id) ON DELETE SET NULL,
                            FOREIGN KEY (seance_id) REFERENCES seances(id) ON DELETE SET NULL,
                            FOREIGN KEY (resolu_par) REFERENCES utilisateurs(id) ON DELETE SET NULL,
                            INDEX idx_employe (employe_id),
+                           INDEX idx_cinema (cinema_id),
                            INDEX idx_salle (salle_id),
                            INDEX idx_type (type_incident),
                            INDEX idx_statut (statut),
@@ -194,11 +227,65 @@ CREATE TABLE incidents (
 );
 
 -- ============================================
--- TRIGGERS pour mettre à jour les moyennes
+-- VUES utiles pour l'application (MISES À JOUR)
 -- ============================================
 
--- Trigger pour mettre à jour la note moyenne des films
+-- Vue pour les séances avec détails incluant le cinéma
+CREATE VIEW v_seances_details AS
+SELECT
+    s.id,
+    s.date_seance,
+    s.heure_debut,
+    s.heure_fin,
+    s.prix,
+    s.places_disponibles,
+    s.places_vendues,
+    s.statut,
+    f.titre as film_titre,
+    f.duree as film_duree,
+    f.affiche as film_affiche,
+    sal.nom as salle_nom,
+    sal.capacite as salle_capacite,
+    c.ville as cinema_ville,
+    c.pays as cinema_pays,
+    c.adresse as cinema_adresse
+FROM seances s
+         JOIN films f ON s.film_id = f.id
+         JOIN salles sal ON s.salle_id = sal.id
+         JOIN cinemas c ON sal.cinema_id = c.id;
+
+-- Vue pour les réservations avec détails incluant le cinéma
+CREATE VIEW v_reservations_details AS
+SELECT
+    r.id,
+    r.numero_reservation,
+    r.nb_places,
+    r.prix_total,
+    r.statut,
+    r.date_reservation,
+    r.qr_code,
+    u.nom as client_nom,
+    u.prenom as client_prenom,
+    u.email as client_email,
+    f.titre as film_titre,
+    s.date_seance,
+    s.heure_debut,
+    sal.nom as salle_nom,
+    c.ville as cinema_ville,
+    c.adresse as cinema_adresse
+FROM reservations r
+         JOIN utilisateurs u ON r.utilisateur_id = u.id
+         JOIN seances s ON r.seance_id = s.id
+         JOIN films f ON s.film_id = f.id
+         JOIN salles sal ON s.salle_id = sal.id
+         JOIN cinemas c ON sal.cinema_id = c.id;
+
+-- ============================================
+-- TRIGGERS pour mettre à jour les moyennes (IDENTIQUES)
+-- ============================================
+
 DELIMITER //
+
 CREATE TRIGGER update_film_note_moyenne
     AFTER INSERT ON avis
     FOR EACH ROW
@@ -256,83 +343,13 @@ BEGIN
         END IF;
     END IF;
 END//
+
 DELIMITER ;
-
--- ============================================
--- VUES utiles pour l'application
--- ============================================
-
--- Vue pour les séances avec détails
-CREATE VIEW v_seances_details AS
-SELECT
-    s.id,
-    s.date_seance,
-    s.heure_debut,
-    s.heure_fin,
-    s.prix,
-    s.places_disponibles,
-    s.places_vendues,
-    s.statut,
-    f.titre as film_titre,
-    f.duree as film_duree,
-    f.affiche as film_affiche,
-    sal.nom as salle_nom,
-    sal.capacite as salle_capacite
-FROM seances s
-         JOIN films f ON s.film_id = f.id
-         JOIN salles sal ON s.salle_id = sal.id;
-
--- Vue pour les réservations avec détails
-CREATE VIEW v_reservations_details AS
-SELECT
-    r.id,
-    r.numero_reservation,
-    r.nb_places,
-    r.prix_total,
-    r.statut,
-    r.date_reservation,
-    r.qr_code,
-    u.nom as client_nom,
-    u.prenom as client_prenom,
-    u.email as client_email,
-    f.titre as film_titre,
-    s.date_seance,
-    s.heure_debut,
-    sal.nom as salle_nom
-FROM reservations r
-         JOIN utilisateurs u ON r.utilisateur_id = u.id
-         JOIN seances s ON r.seance_id = s.id
-         JOIN films f ON s.film_id = f.id
-         JOIN salles sal ON s.salle_id = sal.id;
-
--- ============================================
--- INDEX pour optimiser les performances
--- ============================================
-
--- Index composites pour les requêtes fréquentes
-CREATE INDEX idx_seances_date_film ON seances(date_seance, film_id);
-CREATE INDEX idx_reservations_user_date ON reservations(utilisateur_id, date_reservation);
-CREATE INDEX idx_films_statut_date ON films(statut, date_sortie);
-
--- ============================================
--- COMMENTAIRES sur les tables
--- ============================================
-
-ALTER TABLE utilisateurs COMMENT = 'Table des utilisateurs (clients, employés, admins)';
-ALTER TABLE films COMMENT = 'Table des films disponibles dans les cinémas';
-ALTER TABLE seances COMMENT = 'Table des séances programmées';
-ALTER TABLE reservations COMMENT = 'Table des réservations clients';
-ALTER TABLE avis COMMENT = 'Table des avis clients sur les films';
-ALTER TABLE incidents COMMENT = 'Table des incidents techniques (app bureautique)';
-ALTER TABLE salles COMMENT = 'Table des salles de cinéma';
-ALTER TABLE categories COMMENT = 'Table des catégories de films';
 
 -- ============================================
 -- CONFIGURATION FINALE
 -- ============================================
 
--- Activer les clés étrangères
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Message de confirmation
-SELECT 'Base de données Cinephoria créée avec succès !' as message;
+SELECT 'Base de données Cinephoria avec gestion multi-cinémas créée avec succès !' as message;

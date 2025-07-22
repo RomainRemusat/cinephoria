@@ -1,7 +1,7 @@
 </main>
 
 <!-- Footer -->
-<footer class="footer-cinephoria mt-5">
+<footer class="footer-cinephoria">
     <div class="container">
         <div class="row">
             <!-- À propos -->
@@ -95,9 +95,9 @@
                 </p>
             </div>
             <div class="col-md-6 text-md-end">
-                <p class="mb-0 small text-muted">
+                <p class="mb-0 small text-white">
                     <i class="bi bi-code-slash me-1"></i>
-                    Développé avec ❤️ pour l'environnement
+                    Développé avec ❤️ par @tatort pour l'environnement
                 </p>
             </div>
         </div>
@@ -106,6 +106,19 @@
 
 <!-- Bootstrap 5 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Attendre que le DOM soit prêt et faire disparaitre les alert au bout d'un certain temps
+    document.addEventListener('DOMContentLoaded', function () {
+        const alerts = document.querySelectorAll('.alert:not(details .alert)');
 
+        alerts.forEach(function (alert) {
+            // Après 5 secondes (5000 ms), on ferme l'alerte avec l'effet Bootstrap
+            setTimeout(() => {
+                const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                bsAlert.close();
+            }, 5000);
+        });
+    });
+</script>
 </body>
 </html>

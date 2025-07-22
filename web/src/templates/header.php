@@ -8,6 +8,9 @@ if (session_status() === PHP_SESSION_NONE) {
 if (!function_exists('isLoggedIn')) {
     require_once __DIR__ . '/../helpers/helpers.php';
 }
+
+include_once __DIR__ . '/../helpers/functions.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -32,17 +35,33 @@ if (!function_exists('isLoggedIn')) {
     <link href="assets/css/style.css" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon/favicon.ico">
 </head>
 <body>
+
+
+<!-- Messages flash -->
+<?php if ($flashes = getAllFlashes()): ?>
+    <div class="position-relative">
+        <?php foreach ($flashes as $type => $message): ?>
+            <div class="alert alert-<?= $type === 'error' ? 'danger' : $type ?> alert-dismissible fade show m-0" role="alert">
+                <i class="bi bi-<?= $type === 'success' ? 'check-circle' : ($type === 'error' ? 'exclamation-triangle' : 'info-circle') ?> me-2"></i>
+                <?= clean($message) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
+<!-- Contenu principal -->
 
 <!-- Navigation principale -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary-cinephoria">
     <div class="container">
         <!-- Logo -->
         <a class="navbar-brand fw-bold fs-3" href="index.php">
-            <i class="bi bi-film text-accent-cinephoria me-2"></i>
-            <span class="text-accent-cinephoria">CINÉ</span>PHORIA
+            <img src="assets/images/logo/logo-cinephoria-simple.svg" alt="logo de la société cinéphoria" width="180" height="60">
+
         </a>
 
         <!-- Bouton mobile -->
@@ -53,7 +72,7 @@ if (!function_exists('isLoggedIn')) {
         <!-- Menu de navigation -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <!-- Menu gauche -->
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav me-auto ">
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">
                         <i class="bi bi-house-door me-1"></i>Accueil
@@ -69,7 +88,7 @@ if (!function_exists('isLoggedIn')) {
                         <i class="bi bi-ticket-perforated me-1"></i>Réservation
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item ">
                     <a class="nav-link" href="contact.php">
                         <i class="bi bi-envelope me-1"></i>Contact
                     </a>
@@ -77,7 +96,7 @@ if (!function_exists('isLoggedIn')) {
             </ul>
 
             <!-- Menu droite - Utilisateur -->
-            <ul class="navbar-nav">
+            <ul class="navbar-nav align-items-center">
                 <?php if (isLoggedIn()): ?>
                     <?php $user = getCurrentUser(); ?>
 
@@ -143,18 +162,5 @@ if (!function_exists('isLoggedIn')) {
     </div>
 </nav>
 
-<!-- Messages flash -->
-<?php if ($flashes = getAllFlashes()): ?>
-    <div class="container mt-3">
-        <?php foreach ($flashes as $type => $message): ?>
-            <div class="alert alert-<?= $type === 'error' ? 'danger' : $type ?> alert-dismissible fade show" role="alert">
-                <i class="bi bi-<?= $type === 'success' ? 'check-circle' : ($type === 'error' ? 'exclamation-triangle' : 'info-circle') ?> me-2"></i>
-                <?= clean($message) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
 
-<!-- Contenu principal -->
 <main>
