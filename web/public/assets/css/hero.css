@@ -1,0 +1,93 @@
+ .hero-slideshow {
+     position: relative;
+     overflow: hidden;
+ }
+
+.hero-slide {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 80vh;
+    position: relative;
+}
+
+.hero-fallback {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2c4a6b 100%);
+    min-height: 60vh;
+}
+
+
+.hero-description {
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+.stat-box {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.poster-image {
+    max-width: 280px;
+    width: 100%;
+    border-radius: 15px;
+    border: 3px solid rgba(255,255,255,0.2);
+}
+
+.poster-placeholder {
+    width: 280px;
+    height: 400px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.film-card {
+    transition: transform 0.2s ease;
+    border: none;
+}
+
+.film-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.film-rating {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+}
+
+@media (max-width: 768px) {
+    .display-3 {
+        font-size: 2.5rem;
+    }
+
+    .hero-slide {
+        min-height: 70vh;
+    }
+
+    .stat-box {
+        padding: 0.75rem;
+    }
+}
