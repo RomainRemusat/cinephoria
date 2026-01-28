@@ -1,10 +1,33 @@
-# flyctl launch added from .idea\.gitignore
-# Default ignored files
-.idea\shelf
-.idea\workspace.xml
-# Editor-based HTTP Client requests
-.idea\httpRequests
-# Datasource local storage ignored files
-.idea\dataSources
-.idea\dataSources.local.xml
+Set-Content -Path .dockerignore -Value @'
+# --- Correction des erreurs ---
+.idea/
 fly.toml
+
+# --- Dossiers Système ---
+.git/
+.gitignore
+.env
+.DS_Store
+Thumbs.db
+
+# --- Ignorer les applis Mobile & Bureau (Trop lourds) ---
+ios/
+android/
+linux/
+macos/
+windows/
+build/
+.dart_tool/
+
+# --- Python ---
+__pycache__/
+
+# --- Dépendances Web ---
+node_modules/
+vendor/
+
+# --- Fichiers temporaires ---
+*.log
+*.tmp
+*.bak
+'@
