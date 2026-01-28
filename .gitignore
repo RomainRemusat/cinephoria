@@ -39,7 +39,6 @@ __pycache__/
 *.tmp
 *.bak
 .cache/
-~$*
 
 # --- Déploiement ---
 fly.toml
