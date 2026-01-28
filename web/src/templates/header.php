@@ -36,6 +36,18 @@ include_once __DIR__ . '/../helpers/functions.php';
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/images/favicon/favicon.ico">
+
+
+
+    <script>
+        // On expose l'état de connexion et l'ID utilisateur au JavaScript
+        window.Cinephoria = {
+            isLoggedIn: <?= isLoggedIn() ? 'true' : 'false' ?>,
+            userId: <?= $_SESSION['user_id'] ?? 'null' ?>
+        };
+    </script>
+
+
 </head>
 <body>
 

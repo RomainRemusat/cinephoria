@@ -344,6 +344,33 @@ class Cinema
         }
     }
 
+    /**
+     * Récupère les films uniques à l'affiche pour un cinéma donné
+     * Idéal pour le filtrage dynamique par Selectbox
+     */
+    public function getFilmsActifsByCinema($cinemaId) {
+        try {
+            $req = "SELECT f.id, f.titre, f.description, f.duree, f.affiche, f.note_moyenne,
+                       c.nom as categorie_nom,
+                       COUNT(se.id) as nb_seances,
+                       MIN(se.prix) as prix_min
+                FROM films f
+                LEFT JOIN categories c ON f.categorie_id = c.id
+                JOIN seances se ON f.id = se.film_id
+                JOIN salles s ON se.salle_id = s.id
+                WHERE s.cinema_id = ? 
+                  AND (f.statut = 'en_cours' OR f.statut = 'a_venir')
+                  AND se.date_seance >= CURDATE()
+                GROUP BY f.id, c.nom
+                ORDER BY f.note_moyenne DESC";
+
+            $stmt = $this->db->getPdo()->prepare($req);
+            $stmt->execute([$cinemaId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            throw new Exception('Erreur films par cinéma : ' . $e->getMessage());
+        }
+    }
 
     /**
      * Crée un nouveau cinéma
