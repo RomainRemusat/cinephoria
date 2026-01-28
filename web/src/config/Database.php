@@ -25,7 +25,8 @@ class Database {
         if (getenv('FLY_APP_NAME')) {
             // --- CONFIGURATION PRODUCTION (FLY.IO) ---
             // On force les valeurs ici, on ne laisse pas le choix au code.
-            $host = 'cinephoria-db-romain.internal';
+//            $host = 'cinephoria-db-romain.internal'; BUG pk ?
+            $host = '[fdaa:22:90bc:a7b:44f:7e1:2064:2]';
             $dbname = 'cinephoria';
             $user = 'root';
             $pass = 'root24Romain_12!'; // Votre mot de passe
