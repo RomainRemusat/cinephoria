@@ -1,7 +1,6 @@
 <?php
 /**
- * Database.php - Version simple
- * Étape 1.1 : Juste l'essentiel pour valider la connexion
+ * Database.php - Version compatible XAMPP (Local) ET Fly.io (Prod)
  */
 
 class Database {
@@ -9,17 +8,12 @@ class Database {
     private static $instance = null;
     private $pdo;
 
-    /**
-     * Constructeur privé (Singleton)
-     */
     private function __construct() {
+        // On essaie de charger la config, mais sans planter si le fichier n'est pas là
         $this->loadConfig();
         $this->connect();
     }
 
-    /**
-     * Obtenir l'instance unique
-     */
     public static function getInstance() {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -28,127 +22,79 @@ class Database {
     }
 
     /**
-     * Charger la config depuis .env
+     * Charger la config de manière souple
      */
     private function loadConfig() {
-//        $envPath = __DIR__ . '/../../config/.env';
-        $envPath = __DIR__ . '/.env';  // Chemin corrigé
+        // Chemin vers le fichier .env (pour le local)
+        $envPath = __DIR__ . '/.env'; // Ou '/../../config/.env' selon votre structure
 
-        if (!file_exists($envPath)) {
-            throw new Exception('Fichier .env introuvable : ' . $envPath);
-        }
+        // Si le fichier existe (LOCAL), on le lit
+        if (file_exists($envPath)) {
+            $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                if (strpos($line, '#') === 0) continue;
+                if (strpos($line, '=') !== false) {
+                    list($key, $value) = explode('=', $line, 2);
+                    $key = trim($key);
+                    $value = trim($value);
 
-        // Lire le fichier ligne par ligne
-        $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-        foreach ($lines as $line) {
-            // Ignorer les commentaires
-            if (strpos($line, '#') === 0) {
-                continue;
-            }
-
-            // Séparer clé=valeur
-            if (strpos($line, '=') !== false) {
-                list($key, $value) = explode('=', $line, 2);
-                $_ENV[trim($key)] = trim($value);
+                    // On remplit $_ENV et on rend dispo via getenv()
+                    $_ENV[$key] = $value;
+                    putenv("$key=$value");
+                }
             }
         }
+        // Si le fichier n'existe pas (FLY.IO), on ne fait rien et on continue !
+        // On fera confiance aux variables d'environnement natives.
     }
 
-    /**
-     * Établir la connexion PDO
-     */
     private function connect() {
-        $host = $_ENV['DB_HOST'] ?? 'localhost';
-        $dbname = $_ENV['DB_NAME'] ?? 'cinephoria';
-        $username = $_ENV['DB_USER'] ?? 'root';
-        $password = $_ENV['DB_PASS'] ?? '';
+        // C'EST ICI LA CLÉ :
+        // On cherche d'abord dans les variables système (Fly.io) via getenv()
+        // Sinon dans $_ENV (Local)
+        // Sinon on prend une valeur par défaut
+
+        $host = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? 'localhost');
+        $dbname = getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? 'cinephoria');
+        $user = getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? 'root');
+        $pass = getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? '');
+
+        // Correction pour le port (parfois nécessaire)
+        // Si l'hôte contient un port (ex: hostname:3306), PDO gère mal parfois
+        // Mais Fly.io utilise le port standard 3306 par défaut.
 
         $dsn = "mysql:host={$host};dbname={$dbname};charset=utf8mb4";
 
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false
+            PDO::ATTR_EMULATE_PREPARES => false,
+            // Option importante pour éviter les timeout de connexion sur le cloud
+            PDO::ATTR_TIMEOUT => 5
         ];
 
         try {
-            $this->pdo = new PDO($dsn, $username, $password, $options);
-            echo "<!-- Connexion PDO réussie -->\n";
+            $this->pdo = new PDO($dsn, $user, $pass, $options);
+            // On commente l'echo pour éviter de casser le JSON ou l'affichage HTML en prod
+            // echo "\n";
         } catch (PDOException $e) {
-            throw new Exception('Erreur connexion BDD : ' . $e->getMessage());
+            // En prod, il vaut mieux ne pas afficher le mot de passe dans l'erreur
+            // On affiche juste le message générique + l'erreur technique
+            throw new Exception('Erreur connexion BDD (' . $host . ') : ' . $e->getMessage());
         }
     }
 
-    // ===========================================
-    // MÉTHODES POUR TESTER
-    // ===========================================
-
-    /**
-     * Exécuter une requête simple
-     */
     public function query($sql) {
-        try {
-            return $this->pdo->query($sql);
-        } catch (PDOException $e) {
-            throw new Exception('Erreur requête : ' . $e->getMessage());
-        }
+        return $this->pdo->query($sql);
     }
 
-    /**
-     * Compter des enregistrements
-     */
-    public function count($table) {
-        $stmt = $this->query("SELECT COUNT(*) as total FROM {$table}");
-        $result = $stmt->fetch();
-        return (int)$result['total'];
-    }
-
-    /**
-     * Récupérer un utilisateur par email
-     */
-    public function getUserByEmail($email) {
-        $stmt = $this->pdo->prepare("SELECT * FROM utilisateurs WHERE email = ?");
-        $stmt->execute([$email]);
-        return $stmt->fetch();
-    }
-
-    /**
-     * Obtenir l'objet PDO (pour les classes métier)
-     */
     public function getPdo() {
         return $this->pdo;
     }
-
-    /**
-     * Test de connexion simple
-     */
-    public function testConnection() {
-        try {
-            $stmt = $this->pdo->query('SELECT 1 as test');
-            $result = $stmt->fetch();
-            return $result['test'] === 1;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-
-    /**
-     * Empêche la duplication de l'instance (important pour le Singleton)
-     *
-     * - __clone() est privé pour empêcher qu'on duplique l'objet avec "clone"
-     *   Exemple interdit : $copie = clone $db;
-     *
-     * - __wakeup() déclenche une erreur si on essaie de "réveiller" (unserialize)
-     *   Exemple interdit : $db2 = unserialize(serialize($db));
-     *
-     * Cela garantit qu'on a toujours une seule instance de la classe Database
-     */
 
     private function __clone() {}
     public function __wakeup() {
         throw new Exception("Singleton cannot be unserialized");
     }
 }
-
 ?>
